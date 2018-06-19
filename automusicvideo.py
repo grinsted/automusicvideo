@@ -13,12 +13,12 @@ import random
 #                  settings
 #----------------------------------------------
 
-inputmidifile = 'input/doneyouwrong.mid'
+inputmidifile = 'input/nørreport.mid'
 trackname = u'VideoTrack'
-inputvideofiles = ["input/Century21964.mp4"]
-soundtrack = 'input/doneyouwrong.aif'
+inputvideofiles = ["input/DoubleFeatureHell8grindhouse3.mp4"]
+soundtrack = 'input/nørreport.wav'
 
-outputfile = 'output/Done you wrong.mp4'
+outputfile = 'output/nørreport.mp4'
 
 intermediaryformat=['-an','-c:v','copy']
 #intermediaryformat=['-an','-c:v', 'libx264', '-vf','scale=-1:720','-r','25']
@@ -30,6 +30,10 @@ outputformat=['-c:a','libfaac', '-b:a:0', '128k', '-c:v','copy']
 userandomseeks = True
 
 
+ffmpeg = "ffmpeg\\bin\\ffmpeg.exe"
+#ffmpeg ="ffmpeg"
+#ffprobe= 'ffprobe'
+ffprobe= "ffmpeg\\bin\\ffprobe.exe"
 #----------------------------------------------
 
 
@@ -80,7 +84,7 @@ class VideoFile:
 	@property
 	def duration(self):
 		if not (self._duration is None): return self._duration
-		cmd = ['ffprobe','-v','error','-select_streams','v:0', \
+		cmd = [ffprobe,'-v','error','-select_streams','v:0', \
 		       '-show_entries','stream=duration', \
 		       '-of','default=noprint_wrappers=1:nokey=1',self.filename]
 		#print " ".join(cmd)
@@ -93,7 +97,7 @@ class VideoFile:
 	def iframes(self):
 		if not (self._iframes is None): return self._iframes
 		framecachefile =self.filename +'.fcache'	
-		cmd = ['ffprobe','-select_streams','v','-show_frames', \
+		cmd = [ffprobe,'-select_streams','v','-show_frames', \
 		       '-show_entries','frame=key_frame,pict_type,pkt_pts_time,pkt_duration_time', \
 		       '-of','csv',self.filename]
 		#print " ".join(cmd)
@@ -139,9 +143,9 @@ for ix in range(0,len(cuts)-1):
 	print(repr(cut))
 	seektime = sourcevideo.iframes[int(idx*cut['seekpct'])] 
 	if seektime>0:
-		cmd=['ffmpeg','-i',sourcevideo.filename,'-ss','%.7f' % (seektime),'-t','%.7f' % (cliplen),'-y']+intermediaryformat
+		cmd=[ffmpeg,'-i',sourcevideo.filename,'-ss','%.7f' % (seektime),'-t','%.7f' % (cliplen),'-y']+intermediaryformat
 	else:
-		cmd=['ffmpeg','-i',sourcevideo.filename,'-t','%.7f' % (cliplen),'-y']+intermediaryformat		
+		cmd=[ffmpeg,'-i',sourcevideo.filename,'-t','%.7f' % (cliplen),'-y']+intermediaryformat		
 	cmd.append(clip)
 	print(" ".join(cmd))
 	with open(os.devnull, 'w') as devnull:
@@ -160,7 +164,7 @@ with open(concatfile, "w") as text_file:
 		text_file.write("file '%s'\n" % clip)
 
 
-cmd = ['ffmpeg','-f','concat','-i',concatfile, \
+cmd = [ffmpeg,'-f','concat','-i',concatfile, \
        '-i',soundtrack]
 cmd += outputformat
 cmd.append('-y')

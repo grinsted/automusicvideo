@@ -107,3 +107,4 @@ venv.bak/
 input/
 output/
 temp/
+ffmpeg/
