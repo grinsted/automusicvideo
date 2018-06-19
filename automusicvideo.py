@@ -8,26 +8,28 @@ import sys
 import mido
 import random
 
-
+from joblib import Memory
+memory = Memory(cachedir='temp', verbose=0)
 #----------------------------------------------
 #                  settings
 #----------------------------------------------
 
-inputmidifile = 'input/nørreport.mid'
+inputmidifile = 'input/sufgroove.mid'
 trackname = u'VideoTrack'
 inputvideofiles = ["input/DoubleFeatureHell8grindhouse3.mp4"]
-soundtrack = 'input/nørreport.wav'
+soundtrack = 'input/sufgroove.wav'
 
-outputfile = 'output/nørreport.mp4'
+outputfile = 'output/runningman.mp4'
 
 intermediaryformat=['-an','-c:v','copy']
 #intermediaryformat=['-an','-c:v', 'libx264', '-vf','scale=-1:720','-r','25']
 
-outputformat=['-c:a','libfaac', '-b:a:0', '128k', '-c:v','copy']
+#libfaac
+outputformat=['-c:a','aac', '-b:a:0', '128k', '-c:v','copy']
 #outputformat=['-c:v', 'libx264', '-vf','scale=-1:720', '-c:a','libfaac', '-b:a:0', '128k']
 
 
-userandomseeks = True
+userandomseeks = False
 
 
 ffmpeg = "ffmpeg\\bin\\ffmpeg.exe"
@@ -94,6 +96,7 @@ class VideoFile:
 
 	#todo: percache?
 	@property
+	@memory.cache
 	def iframes(self):
 		if not (self._iframes is None): return self._iframes
 		framecachefile =self.filename +'.fcache'	
@@ -161,7 +164,7 @@ for ix in range(0,len(cuts)-1):
 concatfile=os.path.join('temp','concat.txt')
 with open(concatfile, "w") as text_file:
 	for clip in clips:
-		text_file.write("file '%s'\n" % clip)
+		text_file.write("file '%s'\n" % clip.replace('\\', '/')) 
 
 
 cmd = [ffmpeg,'-f','concat','-i',concatfile, \
