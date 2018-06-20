@@ -2,7 +2,7 @@
 
 A messy python script that automatically generates a music video. 
 
-It cuts an input video at I-frames, and 
+It cuts an input video at I-frames (to minimize re-encoding, and because it is a good indicator of places to cut)
 
 Inputs
 * a midi file
@@ -13,3 +13,6 @@ Inputs
 * Some source video material.
 
 Outputs: A music video
+
+
+Example video: https://youtu.be/zgvcMGsBP4s
