@@ -16,10 +16,10 @@ memory = Memory(cachedir='temp', verbose=0)
 
 inputmidifile = 'input/sufgroove.mid'
 trackname = u'VideoTrack'
-inputvideofiles = ["input/DoubleFeatureHell8grindhouse3.mp4"]
+inputvideofiles = ["input/boop.mp4"]
 soundtrack = 'input/sufgroove.wav'
 
-outputfile = 'output/runningman.mp4'
+outputfile = 'output/runningman3.mp4'
 
 intermediaryformat=['-an','-c:v','copy']
 #intermediaryformat=['-an','-c:v', 'libx264', '-vf','scale=-1:720','-r','25']
@@ -66,7 +66,9 @@ def getcutsfrommidi(filename,miditrackname):
 							cuts.append({'time': 0, 'video': 0, 'seekpct': seekpercentage}) #first cut has to be at zero
 						videoindex = (message.note - 60) % 12 #c is first video file
 						seekpercentage = float(message.velocity)/127.0
-						if userandomseeks: seekpercentage = random.random() *.75 +.07 
+						if userandomseeks: seekpercentage = random.random() 
+						seekpercentage = seekpercentage *.93 +.04
+						
 						cuts.append({'time': time, 'video': videoindex, 'seekpct': seekpercentage})
 						lastcuttime = time
 	cuts.append({'time': mid.length, 'video': None, 'seekpct': None})
